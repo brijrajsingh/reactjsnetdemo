@@ -1,24 +1,30 @@
-﻿var EmployeeBlock = React.createClass({
+﻿
+
+function createRemarkable() {
+    var remarkable = (("undefined" != typeof global) && (global.Remarkable)) ? global.Remarkable : window.Remarkable;
+    return new remarkable();
+}
+
+var EmployeeBlock = React.createClass({
+    rawMarkup: function ()
+    {
+        var md = createRemarkable();
+        var rawMarkup = md.render(this.props.children.toString());
+        return { __html: rawMarkup };
+    },
     loadEmployeesFromServer: function () {
         var xhr = new XMLHttpRequest();
         xhr.open('get', this.props.url, true);
         xhr.onload = function () {
             var data = JSON.parse(xhr.responseText);
-            this.setState({ data: data });
+            this.setState({ data: data, addNew: false });
         }.bind(this);
         xhr.send();
     },
     getInitialState() {
-        //var values = [
-        //  { id:1, created_at: 1, title: "mr. ", name: "brijraj singh" },
-        //  { id:2, created_at: 1, title: "mr. ", name: "rajesh singh" },
-        //  { id:3, created_at: 1, title: "mr. ", name: "prakendra singh" }
-        //];
-        return { data: [],addNew:false }
+        return { data: this.props.initialData };
     },
     componentWillMount: function () {
-        this.loadEmployeesFromServer();
-        window.setInterval(this.loadEmployeesFromServer, this.props.pollInterval);
     },
     addNew()
     {
@@ -35,10 +41,10 @@
         this.setState({ addNew: false })
 
         var data = new FormData();
-        data.append('id', id);
-        data.append('title', title);
-        data.append('name', name);
-        data.append('created_at', created_at);
+        data.append('Id', id);
+        data.append('Title', title);
+        data.append('Name', name);
+        data.append('Created_At', created_at);
 
         var xhr = new XMLHttpRequest();
         xhr.open('post', this.props.submitUrl, true);
@@ -78,10 +84,10 @@
     {
         const rows = this.state.data.map((row) => {
                 return(
-                    <div className="employee" key={row.id}>
-                    <div className="created_at">{row.created_at}</div>
-                    <div className="title">{row.title}</div>
-                    <div className="name">{row.name}
+                    <div className="employee" key={row.Id}>
+                    <div className="created_at">{row.Created_At}</div>
+                    <div className="title">{row.Title}</div>
+                    <div className="name">{row.Name}
                         <button onClick={this.delete.bind(this,row)}>Delete</button>
                     </div>
                 </div>)
@@ -101,9 +107,3 @@
                                     : this.renderList()
     }
 });
-
-
-ReactDOM.render(
-  <EmployeeBlock url="/employees" pollInterval={2000} submitUrl="/employees/new"  />,
-  document.getElementById('content')
-);

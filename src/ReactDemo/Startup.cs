@@ -70,6 +70,10 @@ namespace ReactDemo
                 //config
                 //  .SetLoadBabel(false)
                 //  .AddScriptWithoutTransform("~/Scripts/bundle.server.js");
+
+                config
+                        .AddScript("~/js/remarkable.min.js")
+                        .AddScript("~/js/employee.jsx");
             });
 
             app.UseStaticFiles();
