@@ -32,12 +32,14 @@ var EmployeeBlock = React.createClass({
     },
     saveAndReturn()
     {
-        var id = Math.max.apply(Math, this.state.data.map(function (o) { return o.id; })) + 1;
+        var id = Math.max.apply(Math, this.state.data.map(function (o) { return o.Id; })) + 1;
+        
         var title = this.refs.employeeTitle.value;
         var name = this.refs.employeeName.value;
         var created_at = "today";
-        //var objemp = { id:id,title: title, name: name, created_at: created_at };
-        //this.state.data.push(objemp);
+
+        var obj = { 'Id': id, 'Title': title, 'Name': name, 'Created_At': created_at };
+        
         this.setState({ addNew: false })
 
         var data = new FormData();
@@ -46,11 +48,13 @@ var EmployeeBlock = React.createClass({
         data.append('Name', name);
         data.append('Created_At', created_at);
 
+        var employeesList = this.state.data;
+        employeesList.push(obj);
+         
+        this.setState({ data: employeesList });
+
         var xhr = new XMLHttpRequest();
         xhr.open('post', this.props.submitUrl, true);
-        xhr.onload = function () {
-            this.loadEmployeesFromServer();
-        }.bind(this);
         xhr.send(data);
     },
     delete (item) {
