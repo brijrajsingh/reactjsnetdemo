@@ -31,6 +31,13 @@ namespace ReactDemo.Controllers
                     Title = "Mr.",
                     Name = "Baj Singh",
                     Created_At = DateTime.Now.ToShortDateString()
+                },
+                new EmployeeModel
+                {
+                    Id = 3,
+                    Title = "Ms.",
+                    Name = "Kusum Singh",
+                    Created_At = DateTime.Now.ToShortDateString()
                 }
             };
         }
@@ -54,6 +61,15 @@ namespace ReactDemo.Controllers
         { 
             _employees.Add(employee);
             return Content("Success :)");
+        }
+
+        [Route("employees/delete")]
+        [HttpPost]
+        public ActionResult delete(EmployeeModel employee)
+        {
+            var itemToRemove = _employees.Single(r => r.Id == employee.Id);
+            _employees.Remove(itemToRemove);
+            return Content("Success");
         }
     }
 }

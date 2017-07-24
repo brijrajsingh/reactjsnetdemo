@@ -48,11 +48,15 @@
         xhr.send(data);
     },
     delete (item) {
-        const newState = this.state.data;
-        if (newState.indexOf(item) > -1) {
-            newState.splice(newState.indexOf(item), 1);
-            this.setState({data: newState})
-        }
+        var data = new FormData();
+        data.append('id', item.id);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', this.props.deleteUrl, true);
+        xhr.onload = function () {
+            this.loadEmployeesFromServer();
+        }.bind(this);
+        xhr.send(data);
     },
     renderAddNew()
     {
@@ -104,6 +108,6 @@
 
 
 ReactDOM.render(
-  <EmployeeBlock url="/employees" pollInterval={2000} submitUrl="/employees/new"  />,
+  <EmployeeBlock url="/employees" pollInterval={2000} submitUrl="/employees/new" deleteUrl="/employees/delete"  />,
   document.getElementById('content')
 );
